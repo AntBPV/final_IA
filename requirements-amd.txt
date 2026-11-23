@@ -1,0 +1,4 @@
+# Opcional: probar DirectML en un entorno Python 3.10 separado.
+# No instala CUDA ni ROCm; DirectML puede tener soporte limitado para
+# operaciones usadas por Faster R-CNN.
+torch-directml

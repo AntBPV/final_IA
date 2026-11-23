@@ -10,7 +10,7 @@ El proyecto admite dos formatos de anotacion.
 El dataset observado utiliza esta estructura:
 
 ```text
-data/raw/Train/
+data/raw/train/
   Annotations/
     2008_000008.xml
     img (100).xml
@@ -18,6 +18,14 @@ data/raw/Train/
     2008_000008.jpg
     img (100).jpg
   train.txt
+data/raw/val/
+  Annotations/
+  JPEGImages/
+  val.txt
+data/raw/Test/
+  Annotations/
+  JPEGImages/
+  test.txt
 ```
 
 Cada XML contiene cajas y nombres de clase. La clase `person` se usa como
@@ -32,12 +40,27 @@ python scripts/train.py
 Tambien admite rutas explicitas:
 
 ```powershell
-python scripts/train.py --annotations data/raw/Train/train.txt --images data/raw/Train/JPEGImages
-python scripts/train.py --annotations data/raw/Train/Annotations --images data/raw/Train/JPEGImages
+python scripts/train.py --annotations data/raw/train/train.txt --images data/raw/train/JPEGImages
+python scripts/train.py --annotations data/raw/train/Annotations --images data/raw/train/JPEGImages
 ```
 
 Cuando `train.txt` indica los identificadores, solo se cargan esas imagenes.
 Las coordenadas XML se convierten automaticamente a cajas `[xmin, ymin, xmax, ymax]`.
+El conjunto `val` tiene el mismo formato y se usa para decidir el mejor
+estado del entrenamiento. No debe usarse para ajustar manualmente cada cambio
+durante varias iteraciones sin reservar otro conjunto.
+
+## Interpretacion de train, val y test
+
+- `train`: ajusta los pesos del modelo.
+- `val`: selecciona epocas, umbrales y decisiones de entrenamiento.
+- `test`: debe reservarse para la prueba final y no utilizarse para ajustar el
+  modelo.
+
+La carpeta `val` no significa validacion fisica ni prueba; es una particion
+estandar usada durante el desarrollo. La carpeta `Test` esta disponible para
+la evaluacion final; su nombre completo no debe confundirse con el conjunto
+de entrenamiento.
 
 ## COCO JSON
 

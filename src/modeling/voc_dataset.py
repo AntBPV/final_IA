@@ -68,10 +68,9 @@ class PascalVocPersonDataset(Dataset):
                 if xmax > xmin and ymax > ymin:
                     boxes.append([xmin, ymin, xmax, ymax])
 
-            if boxes:
-                image_path = self.images_root / filename
-                if image_path.exists():
-                    self.records.append({"image_path": image_path, "boxes": boxes})
+            image_path = self.images_root / filename
+            if image_path.exists():
+                self.records.append({"image_path": image_path, "boxes": boxes})
 
         if not self.records:
             raise ValueError(
@@ -86,7 +85,7 @@ class PascalVocPersonDataset(Dataset):
         record = self.records[index]
         image = Image.open(record["image_path"]).convert("RGB")
 
-        boxes = torch.as_tensor(record["boxes"], dtype=torch.float32)
+        boxes = torch.as_tensor(record["boxes"], dtype=torch.float32).reshape(-1, 4)
         target = {
             "boxes": boxes,
             "labels": torch.ones((boxes.shape[0],), dtype=torch.int64),

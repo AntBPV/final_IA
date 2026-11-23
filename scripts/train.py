@@ -25,6 +25,22 @@ def main():
     parser.add_argument("--output", default="models/person_detector.torchscript")
     parser.add_argument("--epochs", type=int)
     parser.add_argument("--batch-size", type=int)
+    parser.add_argument(
+        "--device",
+        default="auto",
+        choices=["auto", "cpu", "cuda", "dml"],
+        help="Dispositivo: auto, cpu, cuda o dml",
+    )
+    parser.add_argument(
+        "--validation-annotations",
+        default="data/raw/val/val.txt",
+        help="Val .txt, JSON COCO, XML o carpeta",
+    )
+    parser.add_argument(
+        "--validation-images",
+        default="data/raw/val/JPEGImages",
+        help="Carpeta de imagenes de validacion",
+    )
     args = parser.parse_args()
 
     checkpoint = train(
@@ -33,6 +49,9 @@ def main():
         args.checkpoint,
         epochs=args.epochs,
         batch_size=args.batch_size,
+        device_name=args.device,
+        validation_annotations=args.validation_annotations,
+        validation_images=args.validation_images,
     )
     export_torchscript(str(checkpoint), args.output)
 

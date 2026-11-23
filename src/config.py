@@ -5,7 +5,7 @@ from dataclasses import dataclass
 class TrainingConfig:
     image_size: int = 800
     batch_size: int = 2
-    epochs: int = 20
+    epochs: int = 50
     learning_rate: float = 0.005
     momentum: float = 0.9
     weight_decay: float = 0.0005
