@@ -216,22 +216,40 @@ region proposal y ROI que no necesariamente estan implementadas igual en
 DirectML. Para este proyecto se agrego seleccion opcional `--device dml`, pero
 se debe considerar experimental hasta ejecutar una prueba real.
 
-El entorno actual usa Python 3.12.0, mientras que `torch-directml` no ofrece
-una instalacion compatible descubierta para esta version. Se recomienda crear
-otro entorno Python 3.10 para probarlo:
+Existe una rueda de `torch-directml` para Python 3.12 en Windows:
+
+- `torch-directml==0.2.5.dev240914`;
+- `torch==2.4.1`;
+- `torchvision==0.19.1`.
+
+Python 3.10 no es obligatorio. Se puede crear un entorno separado con 3.12:
 
 ```powershell
-py -3.10 -m venv .env-dml
+py -3.12 -m venv .env-dml
 .\.env-dml\Scripts\Activate.ps1
 python -m pip install --upgrade pip
-python -m pip install torch torchvision
 python -m pip install -r requirements-amd.txt
 python scripts/check_devices.py
+python scripts/check_directml.py
 ```
 
-Las versiones exactas de PyTorch y torchvision deben coincidir con las
-dependencias aceptadas por la build de `torch-directml`. No se deben mezclar
-el entorno CPU actual y el entorno DirectML.
+El paquete esta disponible como desarrollo y se considera deprecated respecto
+de alternativas modernas como Windows ML. Las versiones exactas de PyTorch y
+torchvision deben coincidir con las dependencias aceptadas por la build.
+No se deben mezclar el entorno CPU actual y el entorno DirectML.
+
+Una prueba realizada con el entorno separado confirmo:
+
+- el dispositivo fue visible como `privateuseone:0`;
+- una operacion tensorial se ejecuto en DirectML;
+- Faster R-CNN pudo inferir una imagen sintetica;
+- una iteracion sintetica de backward produjo todas las perdidas principales;
+- `aten::log_sigmoid_forward` recurrio a CPU, por lo que no toda la operacion
+  del modelo se ejecuta necesariamente en la GPU.
+
+La compatibilidad con entrenamiento real debe medirse con una iteracion sobre
+el dataset y una observacion de FPS/tiempo. No asuma que DirectML sera mas
+rapido hasta ejecutar esa comparacion.
 
 Cuando CUDA o DirectML no este disponible, el sistema sera explicitamente
 CPU. La demo usa una resolucion configurable y inferencia espaciada para

@@ -117,6 +117,22 @@ Para diagnosticar aceleracion disponible:
 python scripts/check_devices.py
 ```
 
+Dentro del entorno `.env-dml`, comprobar el modelo real sobre DirectML:
+
+```powershell
+python scripts/check_directml.py
+```
+
+Para crear un entorno separado de prueba con AMD DirectML y Python 3.12:
+
+```powershell
+py -3.12 -m venv .env-dml
+.\.env-dml\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -r requirements-amd.txt
+python scripts/check_devices.py
+```
+
 Controles:
 
 - `q`: salir
